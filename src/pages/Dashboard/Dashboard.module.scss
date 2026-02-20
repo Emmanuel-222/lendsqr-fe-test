@@ -2,12 +2,20 @@
 @import '../../styles/mixins.scss';
 
 .shell {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 260px 1fr;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
   background: $bg-main;
   color: $text-primary;
   font-family: $font-family;
+  overflow: hidden;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 0;
+  height: calc(100dvh - 64px);
 }
 
 .sidebar {
@@ -17,12 +25,19 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-lg;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .logoRow {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
+}
+
+.logoImg {
+  height: 28px;
+  width: auto;
 }
 
 .logoMark {
@@ -45,12 +60,17 @@
 
 .orgSwitch {
   @include button-reset;
-  background: rgba(57, 205, 204, 0.1);
+  // background: rgba(57, 205, 204, 0.1);
   color: #213f7d;
   padding: $spacing-sm $spacing-md;
   border-radius: $border-radius;
   font-weight: $font-weight-medium;
   text-align: left;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .nav {
@@ -63,7 +83,7 @@
 .navGroup {
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: $spacing-lg;
 }
 
 .navTitle {
@@ -71,15 +91,69 @@
   color: $text-tertiary;
   font-size: 11px;
   letter-spacing: 0.08em;
+  font-weight: $font-weight-semibold;
 }
 
-.navItem {
+.navButton,
+.navItemMuted,
+.navItemActive {
+  @include button-reset;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  border-radius: 8px;
+
+  &:hover {
+    background: rgba(57, 205, 204, 0.08);
+  }
+}
+
+.navButton {
   font-weight: $font-weight-semibold;
   color: #213f7d;
 }
 
 .navItemMuted {
-  color: $text-secondary;
+  color: #213F7D;
+  opacity: 0.7;
+}
+
+.navItemActive {
+  color: #213f7d;
+  font-weight: $font-weight-medium;
+  background: rgba(57, 205, 204, 0.08);
+  border-left: 3px solid $primary;
+  border-radius: 0;
+}
+
+.iconWrap {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+}
+
+.chevron {
+  width: 12px;
+  height: 12px;
+  opacity: 0.7;
+}
+
+.navDivider {
+  height: 1px;
+  background: $border-color;
+  margin: $spacing-md 0;
 }
 
 .main {
@@ -90,22 +164,26 @@
 
 .topbar {
   background: $bg-white;
-  padding: $spacing-md $spacing-xl;
+  padding: $spacing-xl;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid $border-color;
+  box-shadow: $box-shadow;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .searchWrap {
   display: flex;
-  align-items: center;
-  gap: $spacing-sm;
+  align-items: stretch;
   background: $bg-white;
   border: 1px solid rgba(84, 95, 125, 0.2);
-  border-radius: $border-radius;
-  padding: $spacing-xs;
+  border-radius: 10px;
+  overflow: hidden;
   width: min(420px, 100%);
+  height: 40px;
 }
 
 .searchInput {
@@ -113,15 +191,27 @@
   outline: none;
   flex: 1;
   font-size: $font-size-sm;
+  padding: 0 $spacing-md;
+  color: $text-primary;
+
+  &::placeholder {
+    color: $text-tertiary;
+  }
 }
 
 .searchBtn {
   @include button-reset;
   background: $primary;
   color: $bg-white;
-  padding: $spacing-xs $spacing-md;
-  border-radius: $border-radius;
-  font-size: $font-size-sm;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchBtn img {
+  width: 18px;
+  height: 18px;
 }
 
 .topbarRight {
@@ -156,6 +246,8 @@
 
 .content {
   padding: $spacing-xl;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .pageTitle {
@@ -314,7 +406,7 @@
 }
 
 @include tablet {
-  .shell {
+  .body {
     grid-template-columns: 220px 1fr;
   }
 
@@ -324,7 +416,7 @@
 }
 
 @include mobile {
-  .shell {
+  .body {
     grid-template-columns: 1fr;
   }
 
