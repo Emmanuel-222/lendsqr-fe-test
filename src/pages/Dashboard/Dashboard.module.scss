@@ -1,0 +1,359 @@
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  background: $bg-main;
+  color: $text-primary;
+  font-family: $font-family;
+}
+
+.sidebar {
+  background: $bg-white;
+  border-right: 1px solid $border-color;
+  padding: $spacing-xl $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.logoRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.logoMark {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: $primary;
+  color: $bg-white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-bold;
+}
+
+.logoText {
+  font-weight: $font-weight-semibold;
+  color: #213f7d;
+  font-size: $font-size-lg;
+}
+
+.orgSwitch {
+  @include button-reset;
+  background: rgba(57, 205, 204, 0.1);
+  color: #213f7d;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius;
+  font-weight: $font-weight-medium;
+  text-align: left;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  font-size: $font-size-sm;
+}
+
+.navGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.navTitle {
+  text-transform: uppercase;
+  color: $text-tertiary;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.navItem {
+  font-weight: $font-weight-semibold;
+  color: #213f7d;
+}
+
+.navItemMuted {
+  color: $text-secondary;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  background: $bg-white;
+  padding: $spacing-md $spacing-xl;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid $border-color;
+}
+
+.searchWrap {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  background: $bg-white;
+  border: 1px solid rgba(84, 95, 125, 0.2);
+  border-radius: $border-radius;
+  padding: $spacing-xs;
+  width: min(420px, 100%);
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: $font-size-sm;
+}
+
+.searchBtn {
+  @include button-reset;
+  background: $primary;
+  color: $bg-white;
+  padding: $spacing-xs $spacing-md;
+  border-radius: $border-radius;
+  font-size: $font-size-sm;
+}
+
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+}
+
+.docs {
+  color: #213f7d;
+  font-weight: $font-weight-medium;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f5a3c7;
+  color: $bg-white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-semibold;
+}
+
+.userName {
+  color: $text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.content {
+  padding: $spacing-xl;
+}
+
+.pageTitle {
+  margin: 0 0 $spacing-lg;
+  font-size: 24px;
+  color: #213f7d;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+
+.statCard {
+  background: $bg-white;
+  border-radius: $border-radius;
+  padding: $spacing-lg;
+  box-shadow: $box-shadow;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.statIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-semibold;
+  color: $bg-white;
+}
+
+.tonepink {
+  background: #f5a3c7;
+}
+
+.tonepurple {
+  background: #5f6ac4;
+}
+
+.toneorange {
+  background: #f6c453;
+}
+
+.tonered {
+  background: #e3165b;
+}
+
+.statLabel {
+  color: $text-tertiary;
+  font-size: $font-size-xs;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.statValue {
+  font-size: 22px;
+  font-weight: $font-weight-semibold;
+  color: #213f7d;
+}
+
+.tableCard {
+  background: $bg-white;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  overflow: hidden;
+}
+
+.tableHeader,
+.tableRow {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1.6fr 1.1fr 1.4fr 0.9fr;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  align-items: center;
+}
+
+.tableHeader {
+  font-size: $font-size-xs;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: $text-tertiary;
+  background: rgba(248, 249, 250, 0.8);
+}
+
+.tableBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.tableRow {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  border-top: 1px solid rgba(227, 227, 228, 0.6);
+}
+
+.statusCell {
+  display: flex;
+}
+
+.statusPill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  text-transform: capitalize;
+  font-weight: $font-weight-medium;
+}
+
+.statusActive {
+  background: rgba(57, 205, 98, 0.12);
+  color: #39cd62;
+}
+
+.statusInactive {
+  background: rgba(84, 95, 125, 0.12);
+  color: #545f7d;
+}
+
+.statusPending {
+  background: rgba(244, 196, 48, 0.12);
+  color: #f4c430;
+}
+
+.statusBlacklisted {
+  background: rgba(228, 3, 59, 0.12);
+  color: #e4033b;
+}
+
+.tableFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md $spacing-lg;
+  border-top: 1px solid rgba(227, 227, 228, 0.6);
+  font-size: $font-size-sm;
+  color: $text-tertiary;
+}
+
+.pagination {
+  display: flex;
+  gap: $spacing-xs;
+}
+
+.pageBtn {
+  @include button-reset;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: $bg-secondary;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+}
+
+@include tablet {
+  .shell {
+    grid-template-columns: 220px 1fr;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@include mobile {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-md;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .tableHeader {
+    display: none;
+  }
+
+  .tableRow {
+    grid-template-columns: 1fr;
+    gap: $spacing-xs;
+  }
+
+  .tableFooter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-sm;
+  }
+}
