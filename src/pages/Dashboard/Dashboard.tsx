@@ -6,6 +6,9 @@ import briefcaseIcon from '../../assets/icons/briefcase.svg'
 import arrowDownIcon from '../../assets/icons/arrowdown.svg'
 import homeIcon from '../../assets/icons/home.svg'
 import usersIcon from '../../assets/icons/user1.svg'
+import activeUsersIcon from '../../assets/icons/activeusers.svg'
+import usersWithLoansIcon from '../../assets/icons/userswithloans.svg'
+import usersWithSavingsIcon from '../../assets/icons/userswithsavings.svg'
 import guarantorsIcon from '../../assets/icons/usercheck.svg'
 import loansIcon from '../../assets/icons/loan.svg'
 import decisionModelsIcon from '../../assets/icons/handshake.svg'
@@ -30,12 +33,28 @@ import logoutIcon from '../../assets/icons/logout.svg'
 import searchIcon from '../../assets/icons/searchicon.svg'
 import notificationBellIcon from '../../assets/icons/notifcationbellicon.svg'
 import profilePic from '../../assets/images/profilepics.png'
+import UsersTable from '../../components/common/UsersTable'
 
 const stats = [
-  { label: 'Users', value: '2,453', tone: 'pink' },
-  { label: 'Active Users', value: '2,453', tone: 'purple' },
-  { label: 'Users with Loans', value: '12,453', tone: 'orange' },
-  { label: 'Users with Savings', value: '102,453', tone: 'red' },
+  { label: 'Users', value: '2,453', icon: usersIcon, tone: 'pink' },
+  {
+    label: 'Active Users',
+    value: '2,453',
+    icon: activeUsersIcon,
+    tone: 'purple',
+  },
+  {
+    label: 'Users with Loans',
+    value: '12,453',
+    icon: usersWithLoansIcon,
+    tone: 'orange',
+  },
+  {
+    label: 'Users with Savings',
+    value: '102,453',
+    icon: usersWithSavingsIcon,
+    tone: 'red',
+  },
 ]
 
 const users = [
@@ -250,7 +269,7 @@ const Dashboard = () => {
                 <div
                   className={`${styles.statIcon} ${styles[`tone${stat.tone}`]}`}
                 >
-                  {stat.label.slice(0, 1)}
+                  <img className={styles.statIconImg} src={stat.icon} alt="" />
                 </div>
                 <div className={styles.statLabel}>{stat.label}</div>
                 <div className={styles.statValue}>{stat.value}</div>
@@ -258,53 +277,7 @@ const Dashboard = () => {
             ))}
           </div>
 
-          <div className={styles.tableCard}>
-            <div className={styles.tableHeader}>
-              <span>Organization</span>
-              <span>Username</span>
-              <span>Email</span>
-              <span>Phone Number</span>
-              <span>Date Joined</span>
-              <span>Status</span>
-            </div>
-            <div className={styles.tableBody}>
-              {users.map((user, index) => (
-                <div className={styles.tableRow} key={`${user.email}-${index}`}>
-                  <span>{user.org}</span>
-                  <span>{user.username}</span>
-                  <span>{user.email}</span>
-                  <span>{user.phone}</span>
-                  <span>{user.dateJoined}</span>
-                  <span className={styles.statusCell}>
-                    <span
-                      className={`${styles.statusPill} ${
-                        styles[`status${user.status}`]
-                      }`}
-                    >
-                      {user.status}
-                    </span>
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className={styles.tableFooter}>
-              <span>Showing 1 to 8 of 100</span>
-              <div className={styles.pagination}>
-                <button className={styles.pageBtn} type="button">
-                  1
-                </button>
-                <button className={styles.pageBtn} type="button">
-                  2
-                </button>
-                <button className={styles.pageBtn} type="button">
-                  3
-                </button>
-                <button className={styles.pageBtn} type="button">
-                  4
-                </button>
-              </div>
-            </div>
-          </div>
+          <UsersTable users={users} />
         </main>
       </div>
     </div>

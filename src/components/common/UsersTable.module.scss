@@ -1,0 +1,266 @@
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.tableCard {
+  background: $bg-white;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  padding: $spacing-md $spacing-lg;
+  position: relative;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+}
+
+.th {
+  text-transform: uppercase;
+  font-size: $font-size-xs;
+  letter-spacing: 0.06em;
+  color: $text-tertiary;
+  text-align: left;
+  padding: $spacing-sm 0;
+  border-bottom: 1px solid rgba(227, 227, 228, 0.6);
+}
+
+.th > span {
+  margin-right: $spacing-xs;
+}
+
+.filterBtn {
+  @include button-reset;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+}
+
+.filterBtn img {
+  width: 14px;
+  height: 14px;
+}
+
+.filterPanel {
+  position: absolute;
+  top: 48px;
+  left: 16px;
+  width: 260px;
+  background: $bg-white;
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  padding: $spacing-md;
+  z-index: 6;
+}
+
+.filterField {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-md;
+  font-size: $font-size-sm;
+  color: $text-tertiary;
+}
+
+.filterField label {
+  font-size: $font-size-xs;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: $text-tertiary;
+}
+
+.filterField input,
+.filterField select {
+  height: 36px;
+  border: 1px solid rgba(84, 95, 125, 0.2);
+  border-radius: 6px;
+  padding: 0 $spacing-sm;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  background: $bg-white;
+}
+
+.filterActions {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.resetBtn,
+.applyBtn {
+  @include button-reset;
+  height: 40px;
+  padding: 0 $spacing-md;
+  border-radius: 6px;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+}
+
+.resetBtn {
+  border: 1px solid $text-secondary;
+  color: $text-secondary;
+  background: $bg-white;
+}
+
+.applyBtn {
+  background: $primary;
+  color: $bg-white;
+}
+
+.tr td {
+  padding: $spacing-md 0;
+  border-bottom: 1px solid rgba(227, 227, 228, 0.6);
+}
+
+.statusPill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  text-transform: capitalize;
+  font-weight: $font-weight-medium;
+}
+
+.statusActive {
+  background: rgba(57, 205, 98, 0.12);
+  color: #39cd62;
+}
+
+.statusInactive {
+  background: rgba(84, 95, 125, 0.12);
+  color: #545f7d;
+}
+
+.statusPending {
+  background: rgba(244, 196, 48, 0.12);
+  color: #f4c430;
+}
+
+.statusBlacklisted {
+  background: rgba(228, 3, 59, 0.12);
+  color: #e4033b;
+}
+
+.actionsCell {
+  width: 40px;
+  text-align: right;
+  position: relative;
+}
+
+.moreBtn {
+  @include button-reset;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.moreBtn span {
+  width: 4px;
+  height: 4px;
+  background: #545f7d;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  top: 36px;
+  background: $bg-white;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: $spacing-md;
+  min-width: 200px;
+  z-index: 5;
+}
+
+.menuItem {
+  @include button-reset;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm $spacing-sm;
+  border-radius: 6px;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+
+  &:hover {
+    background: rgba(84, 95, 125, 0.08);
+  }
+}
+
+.menuIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.tableFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md 0 0;
+  font-size: $font-size-sm;
+  color: $text-tertiary;
+  background: none;
+}
+
+.footerLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.pageSize {
+  border: none;
+  background: $bg-secondary;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.pageBtn,
+.pageIcon {
+  @include button-reset;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: $bg-secondary;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pageEllipsis {
+  padding: 0 $spacing-xs;
+}
+
+@include mobile {
+  .table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .tableFooter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-sm;
+  }
+}
