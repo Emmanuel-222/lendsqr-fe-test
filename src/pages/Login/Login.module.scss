@@ -72,6 +72,11 @@
   gap: $spacing-xs;
 }
 
+.errorText {
+  font-size: $font-size-sm;
+  color: $status-blacklisted;
+}
+
 .srOnly {
   position: absolute;
   width: 1px;
