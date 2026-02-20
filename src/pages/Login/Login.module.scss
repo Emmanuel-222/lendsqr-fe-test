@@ -1,0 +1,175 @@
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: $bg-white;
+  color: $text-primary;
+  font-family: $font-family;
+}
+
+.left {
+  padding: $spacing-2xl $spacing-2xl * 2;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2xl;
+}
+
+.logo {
+  width: 140px;
+  height: auto;
+}
+
+.illustrationWrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.illustration {
+  max-width: 520px;
+  width: 100%;
+  height: auto;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-2xl;
+}
+
+.formCard {
+  width: 100%;
+  max-width: 420px;
+}
+
+.title {
+  margin: 0 0 $spacing-sm;
+  font-size: 32px;
+  font-weight: $font-weight-semibold;
+  color: #213f7d;
+}
+
+.subtitle {
+  margin: 0 0 $spacing-2xl;
+  color: $text-tertiary;
+  font-size: $font-size-base;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 0 $spacing-md;
+  border: 1px solid rgba(84, 95, 125, 0.3);
+  border-radius: $border-radius;
+  font-size: $font-size-base;
+  color: $text-primary;
+  background: $bg-white;
+  outline: none;
+
+  &::placeholder {
+    color: $text-tertiary;
+  }
+
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba(57, 205, 204, 0.15);
+  }
+}
+
+.passwordField {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordField .input {
+  padding-right: 72px;
+}
+
+.showBtn {
+  @include button-reset;
+  position: absolute;
+  right: $spacing-md;
+  color: $primary;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-xs;
+  letter-spacing: 0.05em;
+}
+
+.forgot {
+  @include button-reset;
+  align-self: flex-start;
+  color: $primary;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-xs;
+  letter-spacing: 0.05em;
+}
+
+.loginBtn {
+  margin-top: $spacing-md;
+  height: 48px;
+  width: 100%;
+  border: none;
+  border-radius: $border-radius;
+  background: $primary;
+  color: $bg-white;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  box-shadow: $box-shadow;
+
+  &:hover {
+    background: $primary-dark;
+  }
+}
+
+@include mobile {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .left {
+    padding: $spacing-xl $spacing-lg 0;
+    align-items: center;
+  }
+
+  .logo {
+    align-self: flex-start;
+  }
+
+  .illustrationWrap {
+    display: none;
+  }
+
+  .right {
+    padding: $spacing-xl $spacing-lg $spacing-2xl;
+  }
+}
