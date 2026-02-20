@@ -28,6 +28,8 @@ import auditLogsIcon from '../../assets/icons/auditicon.svg'
 import systemsMessagesIcon from '../../assets/icons/tireicon.svg'
 import logoutIcon from '../../assets/icons/logout.svg'
 import searchIcon from '../../assets/icons/searchicon.svg'
+import notificationBellIcon from '../../assets/icons/notifcationbellicon.svg'
+import profilePic from '../../assets/images/profilepics.png'
 
 const stats = [
   { label: 'Users', value: '2,453', tone: 'pink' },
@@ -172,9 +174,17 @@ const Dashboard = () => {
           </button>
         </div>
         <div className={styles.topbarRight}>
-          <span className={styles.docs}>Docs</span>
-          <div className={styles.avatar}>A</div>
-          <span className={styles.userName}>Adedeji</span>
+          <button className={styles.docs} type="button">
+            Docs
+          </button>
+          <button className={styles.iconButton} type="button">
+            <img src={notificationBellIcon} alt="Notifications" />
+          </button>
+          <div className={styles.profile}>
+            <img className={styles.profilePic} src={profilePic} alt="Adedeji" />
+            <span className={styles.userName}>Adedeji</span>
+            <img className={styles.chevron} src={arrowDownIcon} alt="" />
+          </div>
         </div>
       </header>
 

@@ -223,25 +223,42 @@
 }
 
 .docs {
+  @include button-reset;
   color: #213f7d;
   font-weight: $font-weight-medium;
+  text-decoration: underline;
 }
 
-.avatar {
+.iconButton {
+  @include button-reset;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: #f5a3c7;
-  color: $bg-white;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: $font-weight-semibold;
+}
+
+.iconButton img {
+  width: 18px;
+  height: 18px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
 }
 
 .userName {
   color: $text-primary;
   font-weight: $font-weight-medium;
+}
+
+.profilePic {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .content {
