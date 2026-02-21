@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './Dashboard.module.scss'
 import logo from '../../assets/images/logo.svg'
@@ -34,95 +34,14 @@ import searchIcon from '../../assets/icons/searchicon.svg'
 import notificationBellIcon from '../../assets/icons/notifcationbellicon.svg'
 import profilePic from '../../assets/images/profilepics.png'
 import UsersTable from '../../components/common/UsersTable'
+import { fetchUsers } from '../../data/usersApi'
+import type { UserRecord } from '../../types/users'
 
-const stats = [
-  { label: 'Users', value: '2,453', icon: usersIcon, tone: 'pink' },
-  {
-    label: 'Active Users',
-    value: '2,453',
-    icon: activeUsersIcon,
-    tone: 'purple',
-  },
-  {
-    label: 'Users with Loans',
-    value: '12,453',
-    icon: usersWithLoansIcon,
-    tone: 'orange',
-  },
-  {
-    label: 'Users with Savings',
-    value: '102,453',
-    icon: usersWithSavingsIcon,
-    tone: 'red',
-  },
-]
-
-const users = [
-  {
-    org: 'Lendsqr',
-    username: 'Adedeji',
-    email: 'adedeji@lendsqr.com',
-    phone: '08079807321',
-    dateJoined: 'May 15, 2020 10:00 AM',
-    status: 'Inactive',
-  },
-  {
-    org: 'Irorun',
-    username: 'Debby Ogana',
-    email: 'debby@irorun.com',
-    phone: '08107680928',
-    dateJoined: 'Apr 30, 2020 10:00 AM',
-    status: 'Pending',
-  },
-  {
-    org: 'Lendstar',
-    username: 'Grace Effiom',
-    email: 'grace@lendstar.com',
-    phone: '07063578921',
-    dateJoined: 'Apr 30, 2020 10:00 AM',
-    status: 'Blacklisted',
-  },
-  {
-    org: 'Lendsqr',
-    username: 'Toisin Dokunmu',
-    email: 'toisin@lendsqr.com',
-    phone: '08068789000',
-    dateJoined: 'Apr 30, 2020 10:00 AM',
-    status: 'Pending',
-  },
-  {
-    org: 'Lendsqr',
-    username: 'Grace Effiom',
-    email: 'grace@lendstar.com',
-    phone: '07067380922',
-    dateJoined: 'Apr 30, 2020 10:00 AM',
-    status: 'Active',
-  },
-  {
-    org: 'Lendsqr',
-    username: 'Toisin Dokunmu',
-    email: 'toisin@lendsqr.com',
-    phone: '07068708900',
-    dateJoined: 'Apr 30, 2020 10:00 AM',
-    status: 'Blacklisted',
-  },
-  {
-    org: 'Lendsqr',
-    username: 'Grace Effiom',
-    email: 'grace@lendstar.com',
-    phone: '07068708922',
-    dateJoined: 'Apr 30, 2020 10:00 AM',
-    status: 'Inactive',
-  },
-  {
-    org: 'Lendsqr',
-    username: 'Toisin Dokunmu',
-    email: 'toisin@lendsqr.com',
-    phone: '07068708922',
-    dateJoined: 'Apr 30, 2020 10:00 AM',
-    status: 'Active',
-  },
-]
+const parseAmount = (value: string) => {
+  const cleaned = value.replace(/[^0-9.]/g, '')
+  const parsed = Number.parseFloat(cleaned)
+  return Number.isNaN(parsed) ? 0 : parsed
+}
 
 const sidebarSections = [
   {
@@ -166,6 +85,9 @@ const sidebarSections = [
 const Dashboard = () => {
   const navigate = useNavigate()
   const [activeItem, setActiveItem] = useState('Users')
+  const [users, setUsers] = useState<UserRecord[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const sectionItems = useMemo(() => {
     return sidebarSections.map((section) => ({
@@ -176,6 +98,81 @@ const Dashboard = () => {
       })),
     }))
   }, [activeItem])
+
+  useEffect(() => {
+    let isMounted = true
+    const loadUsers = async () => {
+      try {
+        const data = await fetchUsers()
+        if (isMounted) {
+          setUsers(data)
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : 'Failed to load users')
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+    loadUsers()
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const stats = useMemo(() => {
+    const totalUsers = users.length
+    const activeUsers = users.filter((user) => user.status === 'Active').length
+    const usersWithLoans = users.filter(
+      (user) => user.education.loanRepayment > 0,
+    ).length
+    const usersWithSavings = users.filter(
+      (user) => parseAmount(user.account.accountBalance) > 0,
+    ).length
+
+    const formatValue = (value: number) => value.toLocaleString()
+
+    return [
+      {
+        label: 'Users',
+        value: formatValue(totalUsers),
+        icon: usersIcon,
+        tone: 'pink',
+      },
+      {
+        label: 'Active Users',
+        value: formatValue(activeUsers),
+        icon: activeUsersIcon,
+        tone: 'purple',
+      },
+      {
+        label: 'Users with Loans',
+        value: formatValue(usersWithLoans),
+        icon: usersWithLoansIcon,
+        tone: 'orange',
+      },
+      {
+        label: 'Users with Savings',
+        value: formatValue(usersWithSavings),
+        icon: usersWithSavingsIcon,
+        tone: 'red',
+      },
+    ]
+  }, [users])
+
+  const tableRows = useMemo(() => {
+    return users.map((user) => ({
+      org: user.orgName,
+      username: user.userName,
+      email: user.email,
+      phone: user.phoneNumber,
+      dateJoined: user.createdAt,
+      status: user.status,
+    }))
+  }, [users])
 
   return (
     <div className={styles.shell}>
@@ -277,7 +274,8 @@ const Dashboard = () => {
             ))}
           </div>
 
-          <UsersTable users={users} />
+          {error ? <p>{error}</p> : null}
+          {isLoading ? <p>Loading users...</p> : <UsersTable users={tableRows} />}
         </main>
       </div>
     </div>
