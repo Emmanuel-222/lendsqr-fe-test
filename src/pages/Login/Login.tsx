@@ -4,8 +4,11 @@ import toast from 'react-hot-toast'
 import styles from './Login.module.scss'
 import logo from '../../assets/images/logo.svg'
 import illustration from '../../assets/images/login-illustration.svg'
-import { mockUsers } from '../../data/mockUsers'
+import { fetchUsers } from '../../data/usersApi'
 import { loginSchema } from '../../utils/schema'
+import type { UserRecord } from '../../types/users'
+
+const DEFAULT_PASSWORD = 'Password@123'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -16,7 +19,7 @@ const Login = () => {
     {},
   )
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     setErrors({})
@@ -37,10 +40,22 @@ const Login = () => {
       return
     }
 
-    const match = mockUsers.find(
+    if (result.data.password !== DEFAULT_PASSWORD) {
+      toast.error('Invalid email or password.')
+      return
+    }
+
+    let users: UserRecord[] = []
+    try {
+      users = await fetchUsers()
+    } catch {
+      toast.error('Unable to load users. Please try again.')
+      return
+    }
+
+    const match = users.find(
       (user) =>
-        user.email.toLowerCase() === result.data.email.toLowerCase() &&
-        user.password === result.data.password,
+        user.email.toLowerCase() === result.data.email.toLowerCase(),
     )
 
     if (!match) {
@@ -50,7 +65,7 @@ const Login = () => {
 
     localStorage.setItem('auth', 'true')
     localStorage.setItem('authUser', match.email)
-    toast.success(`Welcome, ${match.name}!`)
+    toast.success(`Welcome, ${match.fullName || match.userName}!`)
     navigate('/dashboard')
   }
 
