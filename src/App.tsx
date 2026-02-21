@@ -22,7 +22,7 @@ const App = () => {
           }
         />
         <Route
-          path="/user-detail"
+          path="/user-detail/:id"
           element={
             <RequireAuth>
               <UserDetail />

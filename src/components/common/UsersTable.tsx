@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styles from './UsersTable.module.scss'
 import filterIcon from '../../assets/icons/filtericon.svg'
 import eyeIcon from '../../assets/icons/eyeicon.svg'
@@ -6,6 +7,7 @@ import blacklistIcon from '../../assets/icons/blacklistusericon.svg'
 import activeUser from '../../assets/icons/activateusericon.svg'
 
 export type UserRow = {
+  id: string
   org: string
   username: string
   email: string
@@ -28,6 +30,7 @@ const columns = [
 ]
 
 const UsersTable = ({ users }: UsersTableProps) => {
+  const navigate = useNavigate()
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
@@ -126,7 +129,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
         </thead>
         <tbody>
           {users.map((user, index) => (
-            <tr className={styles.tr} key={`${user.email}-${index}`}>
+            <tr className={styles.tr} key={user.id}>
               <td>{user.org}</td>
               <td>{user.username}</td>
               <td>{user.email}</td>
@@ -156,7 +159,14 @@ const UsersTable = ({ users }: UsersTableProps) => {
                 </button>
                 {openIndex === index ? (
                   <div className={styles.menu} ref={menuRef}>
-                    <button className={styles.menuItem} type="button">
+                    <button
+                      className={styles.menuItem}
+                      type="button"
+                      onClick={() => {
+                        navigate(`/user-detail/${user.id}`)
+                        setOpenIndex(null)
+                      }}
+                    >
                       <img className={styles.menuIcon} src={eyeIcon} alt="" />
                       View Details
                     </button>

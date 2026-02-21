@@ -165,6 +165,7 @@ const Dashboard = () => {
 
   const tableRows = useMemo(() => {
     return users.map((user) => ({
+      id: user.id,
       org: user.orgName,
       username: user.userName,
       email: user.email,
