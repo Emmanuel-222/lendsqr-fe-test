@@ -207,7 +207,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $spacing-md 0 0;
+  padding: $spacing-lg 0 $spacing-sm;
   font-size: $font-size-sm;
   color: $text-tertiary;
   background: none;
@@ -223,22 +223,23 @@
   border: none;
   background: $bg-secondary;
   border-radius: 6px;
-  padding: 4px 8px;
+  padding: 4px 10px;
   font-size: $font-size-sm;
   color: $text-secondary;
+  min-width: 64px;
 }
 
 .pagination {
   display: flex;
   align-items: center;
-  gap: $spacing-xs;
+  gap: 6px;
 }
 
 .pageBtn,
 .pageIcon {
   @include button-reset;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 6px;
   background: $bg-secondary;
   color: $text-secondary;
@@ -248,8 +249,20 @@
   justify-content: center;
 }
 
+.pageBtnActive {
+  @extend .pageBtn;
+  background: $primary;
+  color: $bg-white;
+}
+
+.pageIcon:disabled,
+.pageBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .pageEllipsis {
-  padding: 0 $spacing-xs;
+  padding: 0 4px;
 }
 
 @include mobile {

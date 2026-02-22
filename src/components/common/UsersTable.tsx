@@ -29,12 +29,67 @@ const columns = [
   { key: 'status', label: 'Status' },
 ]
 
+const PAGE_SIZES = [10, 20, 50, 100]
+
+const buildPagination = (totalPages: number, currentPage: number) => {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1)
+  }
+
+  const pages: Array<number | 'ellipsis'> = [1]
+  if (currentPage <= 3) {
+    pages.push(2, 3, 4, 'ellipsis', totalPages)
+    return pages
+  }
+
+  if (currentPage >= totalPages - 2) {
+    pages.push(
+      'ellipsis',
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+      totalPages,
+    )
+    return pages
+  }
+
+  pages.push(
+    'ellipsis',
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    'ellipsis',
+    totalPages,
+  )
+  return pages
+}
+
 const UsersTable = ({ users }: UsersTableProps) => {
   const navigate = useNavigate()
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [pageSize, setPageSize] = useState(10)
+  const [currentPage, setCurrentPage] = useState(1)
   const menuRef = useRef<HTMLDivElement | null>(null)
   const filterRef = useRef<HTMLDivElement | null>(null)
+
+  const totalItems = users.length
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize))
+  const safePage = Math.min(currentPage, totalPages)
+  const startIndex = (safePage - 1) * pageSize
+  const endIndex = startIndex + pageSize
+  const pagedUsers = users.slice(startIndex, endIndex)
+  const paginationItems = buildPagination(totalPages, safePage)
+
+  useEffect(() => {
+    if (currentPage !== safePage) {
+      setCurrentPage(safePage)
+    }
+  }, [currentPage, safePage])
+
+  useEffect(() => {
+    setOpenIndex(null)
+  }, [currentPage, pageSize, users])
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -128,7 +183,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
+          {pagedUsers.map((user, index) => (
             <tr className={styles.tr} key={user.id}>
               <td>{user.org}</td>
               <td>{user.username}</td>
@@ -189,33 +244,61 @@ const UsersTable = ({ users }: UsersTableProps) => {
       <div className={styles.tableFooter}>
         <div className={styles.footerLeft}>
           <span>Showing</span>
-          <select className={styles.pageSize}>
-            <option>100</option>
+          <select
+            className={styles.pageSize}
+            value={pageSize}
+            onChange={(event) => {
+              const nextSize = Number.parseInt(event.target.value, 10)
+              setPageSize(Number.isNaN(nextSize) ? 10 : nextSize)
+              setCurrentPage(1)
+            }}
+          >
+            {PAGE_SIZES.map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
           </select>
-          <span>out of 100</span>
+          <span>out of {totalItems}</span>
         </div>
         <div className={styles.pagination}>
-          <button className={styles.pageIcon} type="button">
-            ‹
+          <button
+            className={styles.pageIcon}
+            type="button"
+            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            disabled={safePage === 1}
+            aria-label="Previous page"
+          >
+            &lsaquo;
           </button>
-          <button className={styles.pageBtn} type="button">
-            1
-          </button>
-          <button className={styles.pageBtn} type="button">
-            2
-          </button>
-          <button className={styles.pageBtn} type="button">
-            3
-          </button>
-          <span className={styles.pageEllipsis}>...</span>
-          <button className={styles.pageBtn} type="button">
-            15
-          </button>
-          <button className={styles.pageBtn} type="button">
-            16
-          </button>
-          <button className={styles.pageIcon} type="button">
-            ›
+          {paginationItems.map((item, index) => {
+            if (item === 'ellipsis') {
+              return (
+                <span className={styles.pageEllipsis} key={`ellipsis-${index}`}>
+                  ...
+                </span>
+              )
+            }
+            const isActive = item === safePage
+            return (
+              <button
+                className={isActive ? styles.pageBtnActive : styles.pageBtn}
+                type="button"
+                key={item}
+                onClick={() => setCurrentPage(item)}
+              >
+                {item}
+              </button>
+            )
+          })}
+          <button
+            className={styles.pageIcon}
+            type="button"
+            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+            disabled={safePage === totalPages}
+            aria-label="Next page"
+          >
+            &rsaquo;
           </button>
         </div>
       </div>
