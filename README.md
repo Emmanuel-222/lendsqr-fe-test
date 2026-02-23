@@ -11,6 +11,7 @@ It includes:
 - Responsive behavior across desktop/tablet/mobile
 - Dashboard search (topbar-driven)
 - Dashboard table filtering (multi-criteria)
+- Unit testing with Vitest + React Testing Library
 
 ## Stack
 
@@ -21,6 +22,9 @@ It includes:
 - SCSS Modules
 - Zod (form validation)
 - React Hot Toast (notifications)
+- Vitest
+- React Testing Library
+- JSDOM
 
 ## Getting Started
 
@@ -55,8 +59,6 @@ npm run build
 npm run lint
 ```
 
-Note: there are existing lint warnings in `src/components/common/UsersTable.tsx` related to `react-hooks/set-state-in-effect`.
-
 ## Project Structure
 
 ```text
@@ -69,12 +71,15 @@ src/
     common/
       UsersTable.tsx
       UsersTable.module.scss
+      usersTable.utils.ts
   data/
     usersApi.ts
     userStore.ts
   pages/
     Login/
+      login.utils.ts
     Dashboard/
+      dashboardSearch.utils.ts
     UserDetail/
   routes/
     RequireAuth.tsx
@@ -82,6 +87,8 @@ src/
     global.scss
     variables.scss
     mixins.scss
+  test/
+    setup.ts
 public/
   users.json
 ```
@@ -202,6 +209,7 @@ Pagination reflects filtered rows.
 
 Main file:
 - `src/components/common/UsersTable.tsx`
+- `src/components/common/usersTable.utils.ts`
 
 ## 10) Responsiveness
 
@@ -219,6 +227,28 @@ Includes:
 - mobile-safe table scrolling behavior
 - desktop overflow fixes
 
+## 11) Testing
+
+Test tooling was added and configured with `jsdom`:
+- Vitest
+- React Testing Library
+- `@testing-library/jest-dom`
+
+Current test coverage includes:
+- Login schema validation (positive + negative)
+- Login first-name extraction helper
+- Dashboard search helper
+- Users table pagination helper
+- Users table filtering helper (including AND-combined filters)
+- Users table filter panel integration behavior (apply + reset)
+
+Test files:
+- `src/utils/schema.test.ts`
+- `src/pages/Login/login.utils.test.ts`
+- `src/pages/Dashboard/dashboardSearch.utils.test.ts`
+- `src/components/common/usersTable.utils.test.ts`
+- `src/components/common/UsersTable.test.tsx`
+
 ## Data Source and State
 
 - Data source: `public/users.json`
@@ -231,16 +261,13 @@ Includes:
 - `npm run dev` - start dev server
 - `npm run build` - type-check + production build
 - `npm run lint` - run ESLint
+- `npm run test` - run unit/integration tests once
+- `npm run test:watch` - run tests in watch mode
 - `npm run preview` - preview production build
-
-## Known Issues / Notes
-
-- `UsersTable.tsx` has existing lint rule violations for `react-hooks/set-state-in-effect`.  
-  These are pre-existing behavior-level lint constraints and do not block runtime functionality.
 
 ## Suggested Next Improvements
 
-1. Resolve `UsersTable` effect-based state lint warnings cleanly.
-2. Connect filter/search state to URL query params for shareable views.
-3. Add unit tests for filtering/search predicates and pagination behavior.
-4. Add integration tests for login + protected route flow.
+1. Connect filter/search state to URL query params for shareable views.
+2. Add higher-level integration tests for login + protected route flow.
+3. Add visual regression checks for stricter Figma parity validation.
+4. Migrate Sass `@import` usage to `@use`/`@forward` to address Sass deprecation warnings.
