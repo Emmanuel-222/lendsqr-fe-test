@@ -9,32 +9,12 @@ import UsersTable from '../../components/common/UsersTable'
 import type { AppLayoutOutletContext } from '../../components/Layout/AppLayout'
 import { fetchUsers } from '../../data/usersApi'
 import type { UserRecord } from '../../types/users'
+import { filterUsersBySearch } from './dashboardSearch.utils'
 
 const parseAmount = (value: string) => {
   const cleaned = value.replace(/[^0-9.]/g, '')
   const parsed = Number.parseFloat(cleaned)
   return Number.isNaN(parsed) ? 0 : parsed
-}
-
-const normalize = (value: string) => value.trim().toLowerCase()
-
-const matchesSearch = (user: UserRecord, query: string) => {
-  const term = normalize(query)
-  if (!term) {
-    return true
-  }
-
-  const fields = [
-    user.orgName,
-    user.userName,
-    user.fullName,
-    user.email,
-    user.phoneNumber,
-    user.bvn,
-    user.status,
-  ]
-
-  return fields.some((field) => normalize(String(field)).includes(term))
 }
 
 const Dashboard = () => {
@@ -108,7 +88,7 @@ const Dashboard = () => {
   }, [users])
 
   const filteredUsers = useMemo(() => {
-    return users.filter((user) => matchesSearch(user, searchQuery))
+    return filterUsersBySearch(users, searchQuery)
   }, [searchQuery, users])
 
   const tableRows = useMemo(() => {

@@ -7,15 +7,9 @@ import illustration from '../../assets/images/login-illustration.svg'
 import { fetchUsers } from '../../data/usersApi'
 import { loginSchema } from '../../utils/schema'
 import type { UserRecord } from '../../types/users'
+import { getFirstName } from './login.utils'
 
 const DEFAULT_PASSWORD = 'Password@123'
-const getFirstName = (fullName: string, email: string) => {
-  const trimmedName = fullName.trim()
-  if (trimmedName) {
-    return trimmedName.split(/\s+/)[0]
-  }
-  return email.split('@')[0]
-}
 
 const Login = () => {
   const navigate = useNavigate()

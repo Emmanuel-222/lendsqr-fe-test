@@ -5,6 +5,12 @@ import filterIcon from '../../assets/icons/filtericon.svg'
 import eyeIcon from '../../assets/icons/eyeicon.svg'
 import blacklistIcon from '../../assets/icons/blacklistusericon.svg'
 import activeUser from '../../assets/icons/activateusericon.svg'
+import {
+  applyFiltersToUsers,
+  buildPagination,
+  defaultFilters,
+  type UserFilters,
+} from './usersTable.utils'
 
 export type UserRow = {
   id: string
@@ -30,99 +36,10 @@ const columns = [
 ]
 
 const PAGE_SIZES = [10, 20, 50, 100]
-type UserFilters = {
-  org: string
-  username: string
-  email: string
-  date: string
-  phone: string
-  status: '' | UserRow['status']
-}
-
-const defaultFilters: UserFilters = {
-  org: '',
-  username: '',
-  email: '',
-  date: '',
-  phone: '',
-  status: '',
-}
-
-const buildPagination = (totalPages: number, currentPage: number) => {
-  if (totalPages <= 7) {
-    return Array.from({ length: totalPages }, (_, index) => index + 1)
-  }
-
-  const pages: Array<number | 'ellipsis'> = [1]
-  if (currentPage <= 3) {
-    pages.push(2, 3, 4, 'ellipsis', totalPages)
-    return pages
-  }
-
-  if (currentPage >= totalPages - 2) {
-    pages.push(
-      'ellipsis',
-      totalPages - 3,
-      totalPages - 2,
-      totalPages - 1,
-      totalPages,
-    )
-    return pages
-  }
-
-  pages.push(
-    'ellipsis',
-    currentPage - 1,
-    currentPage,
-    currentPage + 1,
-    'ellipsis',
-    totalPages,
-  )
-  return pages
-}
-
-const normalize = (value: string) => value.trim().toLowerCase()
-
-const digitsOnly = (value: string) => value.replace(/\D/g, '')
-
-const getIsoDate = (dateJoined: string) => {
-  const parsed = new Date(dateJoined)
-  if (Number.isNaN(parsed.getTime())) {
-    return ''
-  }
-  const year = parsed.getFullYear()
-  const month = String(parsed.getMonth() + 1).padStart(2, '0')
-  const day = String(parsed.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
-
-const applyFiltersToUsers = (rows: UserRow[], filters: UserFilters) => {
-  return rows.filter((row) => {
-    if (filters.org && row.org !== filters.org) {
-      return false
-    }
-    if (filters.status && row.status !== filters.status) {
-      return false
-    }
-    if (filters.username && !normalize(row.username).includes(normalize(filters.username))) {
-      return false
-    }
-    if (filters.email && !normalize(row.email).includes(normalize(filters.email))) {
-      return false
-    }
-    if (filters.phone && !digitsOnly(row.phone).includes(digitsOnly(filters.phone))) {
-      return false
-    }
-    if (filters.date && getIsoDate(row.dateJoined) !== filters.date) {
-      return false
-    }
-    return true
-  })
-}
 
 const UsersTable = ({ users }: UsersTableProps) => {
   const navigate = useNavigate()
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [openUserId, setOpenUserId] = useState<string | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
@@ -137,21 +54,11 @@ const UsersTable = ({ users }: UsersTableProps) => {
 
   const totalItems = filteredUsers.length
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize))
-  const safePage = Math.min(currentPage, totalPages)
-  const startIndex = (safePage - 1) * pageSize
+  const boundedPage = Math.min(currentPage, totalPages)
+  const startIndex = (boundedPage - 1) * pageSize
   const endIndex = startIndex + pageSize
   const pagedUsers = filteredUsers.slice(startIndex, endIndex)
-  const paginationItems = buildPagination(totalPages, safePage)
-
-  useEffect(() => {
-    if (currentPage !== safePage) {
-      setCurrentPage(safePage)
-    }
-  }, [currentPage, safePage])
-
-  useEffect(() => {
-    setOpenIndex(null)
-  }, [currentPage, pageSize, users, appliedFilters])
+  const paginationItems = buildPagination(totalPages, boundedPage)
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -164,14 +71,14 @@ const UsersTable = ({ users }: UsersTableProps) => {
         return
       }
       if (event.target instanceof Node && !menuRef.current.contains(event.target)) {
-        setOpenIndex(null)
+        setOpenUserId(null)
         setIsFilterOpen(false)
       }
     }
 
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setOpenIndex(null)
+        setOpenUserId(null)
         setIsFilterOpen(false)
       }
     }
@@ -271,6 +178,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
                 setAppliedFilters(defaultFilters)
                 setCurrentPage(1)
                 setIsFilterOpen(false)
+                setOpenUserId(null)
               }}
             >
               Reset
@@ -282,6 +190,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
                 setAppliedFilters(draftFilters)
                 setCurrentPage(1)
                 setIsFilterOpen(false)
+                setOpenUserId(null)
               }}
             >
               Filter
@@ -322,7 +231,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
             </tr>
           </thead>
           <tbody>
-            {pagedUsers.map((user, index) => (
+            {pagedUsers.map((user) => (
               <tr className={styles.tr} key={user.id}>
                 <td>{user.org}</td>
                 <td>{user.username}</td>
@@ -344,21 +253,21 @@ const UsersTable = ({ users }: UsersTableProps) => {
                     type="button"
                     aria-label="More"
                     onClick={() =>
-                      setOpenIndex((prev) => (prev === index ? null : index))
+                      setOpenUserId((prev) => (prev === user.id ? null : user.id))
                     }
                   >
                     <span />
                     <span />
                     <span />
                   </button>
-                  {openIndex === index ? (
+                  {openUserId === user.id ? (
                     <div className={styles.menu} ref={menuRef}>
                       <button
                         className={styles.menuItem}
                         type="button"
                         onClick={() => {
                           navigate(`/user-detail/${user.id}`)
-                          setOpenIndex(null)
+                          setOpenUserId(null)
                         }}
                       >
                         <img className={styles.menuIcon} src={eyeIcon} alt="" />
@@ -391,6 +300,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
               const nextSize = Number.parseInt(event.target.value, 10)
               setPageSize(Number.isNaN(nextSize) ? 10 : nextSize)
               setCurrentPage(1)
+              setOpenUserId(null)
             }}
           >
             {PAGE_SIZES.map((size) => (
@@ -406,7 +316,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
             className={styles.pageIcon}
             type="button"
             onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-            disabled={safePage === 1}
+            disabled={boundedPage === 1}
             aria-label="Previous page"
           >
             &lsaquo;
@@ -419,13 +329,16 @@ const UsersTable = ({ users }: UsersTableProps) => {
                 </span>
               )
             }
-            const isActive = item === safePage
+            const isActive = item === boundedPage
             return (
               <button
                 className={isActive ? styles.pageBtnActive : styles.pageBtn}
                 type="button"
                 key={item}
-                onClick={() => setCurrentPage(item)}
+                onClick={() => {
+                  setCurrentPage(item)
+                  setOpenUserId(null)
+                }}
               >
                 {item}
               </button>
@@ -435,7 +348,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
             className={styles.pageIcon}
             type="button"
             onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-            disabled={safePage === totalPages}
+            disabled={boundedPage === totalPages}
             aria-label="Next page"
           >
             &rsaquo;
