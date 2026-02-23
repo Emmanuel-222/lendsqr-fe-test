@@ -1,252 +1,19 @@
 @import '../../styles/variables.scss';
 @import '../../styles/mixins.scss';
 
-.shell {
-  height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  background: $bg-main;
-  color: $text-primary;
-  font-family: $font-family;
-  overflow: hidden;
-}
-
-.body {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  min-height: 0;
-  height: calc(100dvh - 64px);
-}
-
-.sidebar {
-  background: $bg-white;
-  border-right: 1px solid $border-color;
-  padding: $spacing-xl $spacing-lg;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-lg;
-  height: 100%;
-  overflow-y: auto;
-}
-
-.logoRow {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-}
-
-.logoImg {
-  height: 28px;
-  width: auto;
-}
-
-.orgSwitch {
-  @include button-reset;
-  color: #213f7d;
-  padding: $spacing-sm $spacing-md;
-  border-radius: $border-radius;
-  font-weight: $font-weight-medium;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  width: 100%;
-  justify-content: space-between;
-}
-
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-  font-size: $font-size-sm;
-}
-
-.navGroup {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-lg;
-}
-
-.navTitle {
-  text-transform: uppercase;
-  color: $text-tertiary;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  font-weight: $font-weight-semibold;
-}
-
-.navButton,
-.navItemMuted,
-.navItemActive {
-  @include button-reset;
-  width: 100%;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  padding: $spacing-sm $spacing-md;
-  border-radius: 8px;
-
-  &:hover {
-    background: rgba(57, 205, 204, 0.08);
-  }
-}
-
-.navButton {
-  font-weight: $font-weight-semibold;
-  color: #213f7d;
-}
-
-.navItemMuted {
-  color: #213f7d;
-  opacity: 0.7;
-}
-
-.navItemActive {
-  color: #213f7d;
-  font-weight: $font-weight-medium;
-  background: rgba(57, 205, 204, 0.08);
-  border-left: 3px solid $primary;
-  border-radius: 0;
-}
-
-.iconWrap {
-  width: 24px;
-  height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.icon {
-  width: 18px;
-  height: 18px;
-  opacity: 0.7;
-}
-
-.chevron {
-  width: 12px;
-  height: 12px;
-  opacity: 0.7;
-}
-
-.navDivider {
-  height: 1px;
-  background: $border-color;
-  margin: $spacing-md 0;
-}
-
-.topbar {
-  background: $bg-white;
-  padding: $spacing-xl;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: $box-shadow;
-  height: 64px;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.searchWrap {
-  display: flex;
-  align-items: stretch;
-  background: $bg-white;
-  border: 1px solid rgba(84, 95, 125, 0.2);
-  border-radius: 10px;
-  overflow: hidden;
-  width: min(420px, 100%);
-  height: 40px;
-}
-
-.searchInput {
-  border: none;
-  outline: none;
-  flex: 1;
-  font-size: $font-size-sm;
-  padding: 0 $spacing-md;
-  color: $text-primary;
-
-  &::placeholder {
-    color: $text-tertiary;
-  }
-}
-
-.searchBtn {
-  @include button-reset;
-  background: $primary;
-  color: $bg-white;
-  width: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.searchBtn img {
-  width: 18px;
-  height: 18px;
-}
-
-.topbarRight {
-  display: flex;
-  align-items: center;
-  gap: $spacing-md;
-  color: $text-secondary;
-  font-size: $font-size-sm;
-}
-
-.docs {
-  @include button-reset;
-  color: #213f7d;
-  font-weight: $font-weight-medium;
-  text-decoration: underline;
-}
-
-.iconButton {
-  @include button-reset;
-  width: 32px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.iconButton img {
-  width: 18px;
-  height: 18px;
-}
-
-.profile {
-  display: flex;
-  align-items: center;
-  gap: $spacing-xs;
-}
-
-.userName {
-  color: $text-primary;
-  font-weight: $font-weight-medium;
-}
-
-.profilePic {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.content {
-  padding: $spacing-xl;
-  height: 100%;
-  overflow-y: auto;
-}
-
 .backLink {
   @include button-reset;
   color: $text-tertiary;
   font-size: $font-size-sm;
   margin-bottom: $spacing-md;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.backLink img {
+  width: 24px;
+  height: 24px;
 }
 
 .headerRow {
@@ -408,9 +175,28 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: $spacing-lg;
   font-size: $font-size-sm;
+}
+
+.personalGrid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.educationGrid,
+.guarantorGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.socialsGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.innerDivider {
+  height: 1px;
+  background: $border-color;
+  margin: $spacing-lg 0;
 }
 
 .label {
@@ -434,31 +220,23 @@
 }
 
 @include tablet {
-  .body {
-    grid-template-columns: 220px 1fr;
-  }
-
-  .grid {
+  .personalGrid,
+  .educationGrid,
+  .socialsGrid,
+  .guarantorGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @include mobile {
-  .body {
-    grid-template-columns: 1fr;
+  .headerActions {
+    flex-wrap: wrap;
   }
 
-  .sidebar {
-    display: none;
-  }
-
-  .topbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: $spacing-md;
-  }
-
-  .grid {
+  .personalGrid,
+  .educationGrid,
+  .socialsGrid,
+  .guarantorGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
