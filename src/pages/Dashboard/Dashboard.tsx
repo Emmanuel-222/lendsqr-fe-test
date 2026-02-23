@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useOutletContext } from 'react-router-dom'
 import styles from './Dashboard.module.scss'
 import usersIcon from '../../assets/icons/user1.svg'
 import activeUsersIcon from '../../assets/icons/activeusers.svg'
 import usersWithLoansIcon from '../../assets/icons/userswithloans.svg'
 import usersWithSavingsIcon from '../../assets/icons/userswithsavings.svg'
 import UsersTable from '../../components/common/UsersTable'
+import type { AppLayoutOutletContext } from '../../components/Layout/AppLayout'
 import { fetchUsers } from '../../data/usersApi'
 import type { UserRecord } from '../../types/users'
 
@@ -14,7 +16,29 @@ const parseAmount = (value: string) => {
   return Number.isNaN(parsed) ? 0 : parsed
 }
 
+const normalize = (value: string) => value.trim().toLowerCase()
+
+const matchesSearch = (user: UserRecord, query: string) => {
+  const term = normalize(query)
+  if (!term) {
+    return true
+  }
+
+  const fields = [
+    user.orgName,
+    user.userName,
+    user.fullName,
+    user.email,
+    user.phoneNumber,
+    user.bvn,
+    user.status,
+  ]
+
+  return fields.some((field) => normalize(String(field)).includes(term))
+}
+
 const Dashboard = () => {
+  const { searchQuery } = useOutletContext<AppLayoutOutletContext>()
   const [users, setUsers] = useState<UserRecord[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -83,8 +107,12 @@ const Dashboard = () => {
     ]
   }, [users])
 
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) => matchesSearch(user, searchQuery))
+  }, [searchQuery, users])
+
   const tableRows = useMemo(() => {
-    return users.map((user) => ({
+    return filteredUsers.map((user) => ({
       id: user.id,
       org: user.orgName,
       username: user.userName,
@@ -93,7 +121,7 @@ const Dashboard = () => {
       dateJoined: user.createdAt,
       status: user.status,
     }))
-  }, [users])
+  }, [filteredUsers])
 
   return (
     <>

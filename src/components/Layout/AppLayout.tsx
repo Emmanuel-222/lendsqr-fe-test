@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useDeferredValue, useMemo, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import styles from './AppLayout.module.scss'
 import logo from '../../assets/images/logo.svg'
@@ -11,14 +11,26 @@ import notificationBellIcon from '../../assets/icons/notifcationbellicon.svg'
 import profilePic from '../../assets/images/profilepics.png'
 import { sidebarSections } from './layoutConfig'
 
+export type AppLayoutOutletContext = {
+  searchQuery: string
+}
+
 const AppLayout = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const deferredSearchQuery = useDeferredValue(searchQuery)
   const activeItem =
     location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/user-detail')
       ? 'Users'
       : ''
+  const searchPlaceholder = useMemo(() => {
+    if (location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/user-detail')) {
+      return 'Search for anything'
+    }
+    return 'Search'
+  }, [location.pathname])
 
   return (
     <div className={styles.shell}>
@@ -76,7 +88,12 @@ const AppLayout = () => {
           <img className={styles.logoImg} src={logo} alt="Lendsqr logo" />
         </div>
         <div className={styles.searchWrap}>
-          <input className={styles.searchInput} placeholder="Search for anything" />
+          <input
+            className={styles.searchInput}
+            placeholder={searchPlaceholder}
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
           <button className={styles.searchBtn} type="button">
             <img src={searchIcon} alt="search icon" />
           </button>
@@ -198,7 +215,7 @@ const AppLayout = () => {
         ) : null}
 
         <main className={styles.content}>
-          <Outlet />
+          <Outlet context={{ searchQuery: deferredSearchQuery } satisfies AppLayoutOutletContext} />
         </main>
       </div>
     </div>
