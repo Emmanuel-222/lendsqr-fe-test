@@ -25,6 +25,9 @@ const AppLayout = () => {
     location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/user-detail')
       ? 'Users'
       : ''
+  const authEmail = localStorage.getItem('authUser') ?? ''
+  const fallbackName = authEmail ? authEmail.split('@')[0] : 'User'
+  const firstName = localStorage.getItem('authFirstName')?.trim() || fallbackName
   const searchPlaceholder = useMemo(() => {
     if (location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/user-detail')) {
       return 'Search for anything'
@@ -107,7 +110,7 @@ const AppLayout = () => {
           </button>
           <div className={styles.profile}>
             <img className={styles.profilePic} src={profilePic} alt="Adedeji" />
-            <span className={styles.userName}>Adedeji</span>
+            <span className={styles.userName}>{firstName}</span>
             <img className={styles.chevron} src={arrowDownIcon} alt="" />
           </div>
         </div>
@@ -194,6 +197,7 @@ const AppLayout = () => {
               onClick={() => {
                 localStorage.removeItem('auth')
                 localStorage.removeItem('authUser')
+                localStorage.removeItem('authFirstName')
                 navigate('/login', { replace: true })
                 setIsMobileNavOpen(false)
               }}

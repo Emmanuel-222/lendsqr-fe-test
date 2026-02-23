@@ -22,7 +22,7 @@
 .sidebar {
   background: $bg-white;
   border-right: 1px solid $border-color;
-  padding: $spacing-xl $spacing-lg;
+  padding: $spacing-xl 0;
   display: flex;
   flex-direction: column;
   gap: $spacing-lg;
@@ -62,7 +62,8 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  width: 100%;
+  width: auto;
+  margin: 0 $spacing-lg;
   justify-content: space-between;
 }
 
@@ -90,6 +91,7 @@
   font-size: 11px;
   letter-spacing: 0.08em;
   font-weight: $font-weight-semibold;
+  padding: 0 $spacing-lg;
 }
 
 .navButton,
@@ -101,7 +103,7 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  padding: $spacing-sm $spacing-md;
+  padding: $spacing-sm $spacing-lg;
   border-radius: 8px;
 
   &:hover {
@@ -125,6 +127,7 @@
   background: rgba(57, 205, 204, 0.08);
   border-left: 3px solid $primary;
   border-radius: 0;
+  padding-left: calc(#{$spacing-lg} - 3px);
 }
 
 .iconWrap {

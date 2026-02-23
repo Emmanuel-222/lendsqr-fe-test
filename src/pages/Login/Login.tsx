@@ -9,6 +9,13 @@ import { loginSchema } from '../../utils/schema'
 import type { UserRecord } from '../../types/users'
 
 const DEFAULT_PASSWORD = 'Password@123'
+const getFirstName = (fullName: string, email: string) => {
+  const trimmedName = fullName.trim()
+  if (trimmedName) {
+    return trimmedName.split(/\s+/)[0]
+  }
+  return email.split('@')[0]
+}
 
 const Login = () => {
   const navigate = useNavigate()
@@ -65,6 +72,7 @@ const Login = () => {
 
     localStorage.setItem('auth', 'true')
     localStorage.setItem('authUser', match.email)
+    localStorage.setItem('authFirstName', getFirstName(match.fullName, match.email))
     toast.success(`Welcome, ${match.fullName || match.userName}!`)
     navigate('/dashboard')
   }
