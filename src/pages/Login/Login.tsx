@@ -16,14 +16,19 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {},
   )
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (isSubmitting) {
+      return
+    }
 
     setErrors({})
+    setIsSubmitting(true)
     const result = loginSchema.safeParse({
       email: email.trim(),
       password,
@@ -38,11 +43,13 @@ const Login = () => {
         }
       }
       setErrors(fieldErrors)
+      setIsSubmitting(false)
       return
     }
 
     if (result.data.password !== DEFAULT_PASSWORD) {
       toast.error('Invalid email or password.')
+      setIsSubmitting(false)
       return
     }
 
@@ -51,6 +58,7 @@ const Login = () => {
       users = await fetchUsers()
     } catch {
       toast.error('Unable to load users. Please try again.')
+      setIsSubmitting(false)
       return
     }
 
@@ -61,6 +69,7 @@ const Login = () => {
 
     if (!match) {
       toast.error('Invalid email or password.')
+      setIsSubmitting(false)
       return
     }
 
@@ -69,6 +78,7 @@ const Login = () => {
     localStorage.setItem('authFirstName', getFirstName(match.fullName, match.email))
     toast.success(`Welcome, ${match.fullName || match.userName}!`)
     navigate('/dashboard')
+    setIsSubmitting(false)
   }
 
   return (
@@ -141,8 +151,15 @@ const Login = () => {
               FORGOT PASSWORD?
             </button>
 
-            <button className={styles.loginBtn} type="submit">
-              LOG IN
+            <button className={styles.loginBtn} type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <span className={styles.loginLoading}>
+                  <span className={styles.loader} aria-hidden="true" />
+                  <span>LOGGING IN...</span>
+                </span>
+              ) : (
+                'LOG IN'
+              )}
             </button>
           </form>
         </div>

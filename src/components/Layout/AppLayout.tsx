@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import styles from './AppLayout.module.scss'
 import logo from '../../assets/images/logo.svg'
@@ -19,8 +19,10 @@ const AppLayout = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const deferredSearchQuery = useDeferredValue(searchQuery)
+  const profileMenuRef = useRef<HTMLDivElement | null>(null)
   const activeItem =
     location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/user-detail')
       ? 'Users'
@@ -34,6 +36,37 @@ const AppLayout = () => {
     }
     return 'Search'
   }, [location.pathname])
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth')
+    localStorage.removeItem('authUser')
+    localStorage.removeItem('authFirstName')
+    setIsMobileNavOpen(false)
+    setIsProfileMenuOpen(false)
+    navigate('/login', { replace: true })
+  }
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!profileMenuRef.current) return
+      if (event.target instanceof Node && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false)
+      }
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsProfileMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleOutsideClick)
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [])
 
   return (
     <div className={styles.shell}>
@@ -108,10 +141,26 @@ const AppLayout = () => {
           <button className={styles.iconButton} type="button">
             <img src={notificationBellIcon} alt="Notifications" />
           </button>
-          <div className={styles.profile}>
-            <img className={styles.profilePic} src={profilePic} alt="Adedeji" />
-            <span className={styles.userName}>{firstName}</span>
-            <img className={styles.chevron} src={arrowDownIcon} alt="" />
+          <div className={styles.profile} ref={profileMenuRef}>
+            <button
+              type="button"
+              className={styles.profileTrigger}
+              aria-label="Open profile menu"
+              aria-expanded={isProfileMenuOpen}
+              onClick={() => setIsProfileMenuOpen((prev) => !prev)}
+            >
+              <img className={styles.profilePic} src={profilePic} alt="Adedeji" />
+              <span className={styles.userName}>{firstName}</span>
+              <img className={styles.chevron} src={arrowDownIcon} alt="" />
+            </button>
+            {isProfileMenuOpen ? (
+              <div className={styles.profileMenu}>
+                <button type="button" className={styles.profileMenuItem} onClick={handleLogout}>
+                  <img src={logoutIcon} alt="" />
+                  Logout
+                </button>
+              </div>
+            ) : null}
           </div>
         </div>
       </header>
@@ -194,13 +243,7 @@ const AppLayout = () => {
             <button
               className={styles.navItemMuted}
               type="button"
-              onClick={() => {
-                localStorage.removeItem('auth')
-                localStorage.removeItem('authUser')
-                localStorage.removeItem('authFirstName')
-                navigate('/login', { replace: true })
-                setIsMobileNavOpen(false)
-              }}
+              onClick={handleLogout}
             >
               <span className={styles.iconWrap}>
                 <img className={styles.icon} src={logoutIcon} alt="" />

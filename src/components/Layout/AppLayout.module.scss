@@ -264,6 +264,41 @@
   display: flex;
   align-items: center;
   gap: $spacing-xs;
+  position: relative;
+}
+
+.profileTrigger {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.profileMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 140px;
+  background: $bg-white;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: $spacing-xs;
+  z-index: 20;
+}
+
+.profileMenuItem {
+  @include button-reset;
+  width: 100%;
+  text-align: left;
+  padding: $spacing-sm $spacing-md;
+  border-radius: 6px;
+  color: #213f7d;
+  display: flex;
+  gap: 10px;
+
+  &:hover {
+    background: rgba(84, 95, 125, 0.08);
+  }
 }
 
 .userName {
