@@ -30,6 +30,23 @@ const columns = [
 ]
 
 const PAGE_SIZES = [10, 20, 50, 100]
+type UserFilters = {
+  org: string
+  username: string
+  email: string
+  date: string
+  phone: string
+  status: '' | UserRow['status']
+}
+
+const defaultFilters: UserFilters = {
+  org: '',
+  username: '',
+  email: '',
+  date: '',
+  phone: '',
+  status: '',
+}
 
 const buildPagination = (totalPages: number, currentPage: number) => {
   if (totalPages <= 7) {
@@ -64,21 +81,66 @@ const buildPagination = (totalPages: number, currentPage: number) => {
   return pages
 }
 
+const normalize = (value: string) => value.trim().toLowerCase()
+
+const digitsOnly = (value: string) => value.replace(/\D/g, '')
+
+const getIsoDate = (dateJoined: string) => {
+  const parsed = new Date(dateJoined)
+  if (Number.isNaN(parsed.getTime())) {
+    return ''
+  }
+  const year = parsed.getFullYear()
+  const month = String(parsed.getMonth() + 1).padStart(2, '0')
+  const day = String(parsed.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+const applyFiltersToUsers = (rows: UserRow[], filters: UserFilters) => {
+  return rows.filter((row) => {
+    if (filters.org && row.org !== filters.org) {
+      return false
+    }
+    if (filters.status && row.status !== filters.status) {
+      return false
+    }
+    if (filters.username && !normalize(row.username).includes(normalize(filters.username))) {
+      return false
+    }
+    if (filters.email && !normalize(row.email).includes(normalize(filters.email))) {
+      return false
+    }
+    if (filters.phone && !digitsOnly(row.phone).includes(digitsOnly(filters.phone))) {
+      return false
+    }
+    if (filters.date && getIsoDate(row.dateJoined) !== filters.date) {
+      return false
+    }
+    return true
+  })
+}
+
 const UsersTable = ({ users }: UsersTableProps) => {
   const navigate = useNavigate()
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [pageSize, setPageSize] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
+  const [draftFilters, setDraftFilters] = useState<UserFilters>(defaultFilters)
+  const [appliedFilters, setAppliedFilters] = useState<UserFilters>(defaultFilters)
   const menuRef = useRef<HTMLDivElement | null>(null)
   const filterRef = useRef<HTMLDivElement | null>(null)
 
-  const totalItems = users.length
+  const filteredUsers = applyFiltersToUsers(users, appliedFilters)
+  const organizationOptions = Array.from(new Set(users.map((row) => row.org))).sort()
+  const statusOptions: UserRow['status'][] = ['Active', 'Inactive', 'Pending', 'Blacklisted']
+
+  const totalItems = filteredUsers.length
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize))
   const safePage = Math.min(currentPage, totalPages)
   const startIndex = (safePage - 1) * pageSize
   const endIndex = startIndex + pageSize
-  const pagedUsers = users.slice(startIndex, endIndex)
+  const pagedUsers = filteredUsers.slice(startIndex, endIndex)
   const paginationItems = buildPagination(totalPages, safePage)
 
   useEffect(() => {
@@ -89,7 +151,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
 
   useEffect(() => {
     setOpenIndex(null)
-  }, [currentPage, pageSize, users])
+  }, [currentPage, pageSize, users, appliedFilters])
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -127,37 +189,101 @@ const UsersTable = ({ users }: UsersTableProps) => {
         <div className={styles.filterPanel} ref={filterRef}>
           <div className={styles.filterField}>
             <label>Organization</label>
-            <select>
-              <option>Select</option>
+            <select
+              value={draftFilters.org}
+              onChange={(event) =>
+                setDraftFilters((prev) => ({ ...prev, org: event.target.value }))
+              }
+            >
+              <option value="">Select</option>
+              {organizationOptions.map((org) => (
+                <option key={org} value={org}>
+                  {org}
+                </option>
+              ))}
             </select>
           </div>
           <div className={styles.filterField}>
             <label>Username</label>
-            <input placeholder="User" />
+            <input
+              placeholder="User"
+              value={draftFilters.username}
+              onChange={(event) =>
+                setDraftFilters((prev) => ({ ...prev, username: event.target.value }))
+              }
+            />
           </div>
           <div className={styles.filterField}>
             <label>Email</label>
-            <input placeholder="Email" />
+            <input
+              placeholder="Email"
+              value={draftFilters.email}
+              onChange={(event) =>
+                setDraftFilters((prev) => ({ ...prev, email: event.target.value }))
+              }
+            />
           </div>
           <div className={styles.filterField}>
             <label>Date</label>
-            <input type="date" />
+            <input
+              type="date"
+              value={draftFilters.date}
+              onChange={(event) =>
+                setDraftFilters((prev) => ({ ...prev, date: event.target.value }))
+              }
+            />
           </div>
           <div className={styles.filterField}>
             <label>Phone Number</label>
-            <input placeholder="Phone Number" />
+            <input
+              placeholder="Phone Number"
+              value={draftFilters.phone}
+              onChange={(event) =>
+                setDraftFilters((prev) => ({ ...prev, phone: event.target.value }))
+              }
+            />
           </div>
           <div className={styles.filterField}>
             <label>Status</label>
-            <select>
-              <option>Select</option>
+            <select
+              value={draftFilters.status}
+              onChange={(event) =>
+                setDraftFilters((prev) => ({
+                  ...prev,
+                  status: event.target.value as UserFilters['status'],
+                }))
+              }
+            >
+              <option value="">Select</option>
+              {statusOptions.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
             </select>
           </div>
           <div className={styles.filterActions}>
-            <button className={styles.resetBtn} type="button">
+            <button
+              className={styles.resetBtn}
+              type="button"
+              onClick={() => {
+                setDraftFilters(defaultFilters)
+                setAppliedFilters(defaultFilters)
+                setCurrentPage(1)
+                setIsFilterOpen(false)
+              }}
+            >
               Reset
             </button>
-            <button className={styles.applyBtn} type="button">
+            <button
+              className={styles.applyBtn}
+              type="button"
+              onClick={() => {
+                setAppliedFilters(draftFilters)
+                setCurrentPage(1)
+                setIsFilterOpen(false)
+              }}
+            >
               Filter
             </button>
           </div>
