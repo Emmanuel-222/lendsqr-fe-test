@@ -163,83 +163,97 @@ const UsersTable = ({ users }: UsersTableProps) => {
           </div>
         </div>
       ) : null}
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            {columns.map((column) => (
-              <th key={column.key} className={styles.th}>
-                <span>{column.label}</span>
-                <button
-                  className={styles.filterBtn}
-                  type="button"
-                  data-filter-trigger
-                  onClick={() => setIsFilterOpen((prev) => !prev)}
-                >
-                  <img src={filterIcon} alt="" />
-                </button>
-              </th>
-            ))}
-            <th className={styles.th} aria-hidden="true" />
-          </tr>
-        </thead>
-        <tbody>
-          {pagedUsers.map((user, index) => (
-            <tr className={styles.tr} key={user.id}>
-              <td>{user.org}</td>
-              <td>{user.username}</td>
-              <td>{user.email}</td>
-              <td>{user.phone}</td>
-              <td>{user.dateJoined}</td>
-              <td>
-                <span
-                  className={`${styles.statusPill} ${
-                    styles[`status${user.status}`]
-                  }`}
-                >
-                  {user.status}
-                </span>
-              </td>
-              <td className={styles.actionsCell}>
-                <button
-                  className={styles.moreBtn}
-                  type="button"
-                  aria-label="More"
-                  onClick={() =>
-                    setOpenIndex((prev) => (prev === index ? null : index))
-                  }
-                >
-                  <span />
-                  <span />
-                  <span />
-                </button>
-                {openIndex === index ? (
-                  <div className={styles.menu} ref={menuRef}>
+      <div className={styles.tableScroll}>
+        <table className={styles.table}>
+          <colgroup>
+            <col className={styles.colOrg} />
+            <col className={styles.colUsername} />
+            <col className={styles.colEmail} />
+            <col className={styles.colPhone} />
+            <col className={styles.colDate} />
+            <col className={styles.colStatus} />
+            <col className={styles.colActions} />
+          </colgroup>
+          <thead>
+            <tr>
+              {columns.map((column) => (
+                <th key={column.key} className={styles.th}>
+                  <div className={styles.thContent}>
+                    <span className={styles.thLabel}>{column.label}</span>
                     <button
-                      className={styles.menuItem}
+                      className={styles.filterBtn}
                       type="button"
-                      onClick={() => {
-                        navigate(`/user-detail/${user.id}`)
-                        setOpenIndex(null)
-                      }}
+                      data-filter-trigger
+                      aria-label={`Filter by ${column.label}`}
+                      onClick={() => setIsFilterOpen((prev) => !prev)}
                     >
-                      <img className={styles.menuIcon} src={eyeIcon} alt="" />
-                      View Details
-                    </button>
-                    <button className={styles.menuItem} type="button">
-                      <img className={styles.menuIcon} src={blacklistIcon} alt="" />
-                      Blacklist User
-                    </button>
-                    <button className={styles.menuItem} type="button">
-                      <img className={styles.menuIcon} src={activeUser} alt="" />
-                      Activate User
+                      <img src={filterIcon} alt="" />
                     </button>
                   </div>
-                ) : null}
-              </td>
+                </th>
+              ))}
+              <th className={styles.th} aria-hidden="true" />
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {pagedUsers.map((user, index) => (
+              <tr className={styles.tr} key={user.id}>
+                <td>{user.org}</td>
+                <td>{user.username}</td>
+                <td>{user.email}</td>
+                <td>{user.phone}</td>
+                <td>{user.dateJoined}</td>
+                <td>
+                  <span
+                    className={`${styles.statusPill} ${
+                      styles[`status${user.status}`]
+                    }`}
+                  >
+                    {user.status}
+                  </span>
+                </td>
+                <td className={styles.actionsCell}>
+                  <button
+                    className={styles.moreBtn}
+                    type="button"
+                    aria-label="More"
+                    onClick={() =>
+                      setOpenIndex((prev) => (prev === index ? null : index))
+                    }
+                  >
+                    <span />
+                    <span />
+                    <span />
+                  </button>
+                  {openIndex === index ? (
+                    <div className={styles.menu} ref={menuRef}>
+                      <button
+                        className={styles.menuItem}
+                        type="button"
+                        onClick={() => {
+                          navigate(`/user-detail/${user.id}`)
+                          setOpenIndex(null)
+                        }}
+                      >
+                        <img className={styles.menuIcon} src={eyeIcon} alt="" />
+                        View Details
+                      </button>
+                      <button className={styles.menuItem} type="button">
+                        <img className={styles.menuIcon} src={blacklistIcon} alt="" />
+                        Blacklist User
+                      </button>
+                      <button className={styles.menuItem} type="button">
+                        <img className={styles.menuIcon} src={activeUser} alt="" />
+                        Activate User
+                      </button>
+                    </div>
+                  ) : null}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className={styles.tableFooter}>
         <div className={styles.footerLeft}>

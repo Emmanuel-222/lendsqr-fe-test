@@ -156,11 +156,26 @@
   }
 }
 
-@include mobile {
+@media (max-width: $desktop) {
   .page {
     grid-template-columns: 1fr;
   }
 
+  .left {
+    padding: $spacing-xl $spacing-xl 0;
+    gap: $spacing-xl;
+  }
+
+  .illustration {
+    max-width: 420px;
+  }
+
+  .right {
+    padding: $spacing-xl;
+  }
+}
+
+@include mobile {
   .left {
     padding: $spacing-xl $spacing-lg 0;
     align-items: center;

@@ -9,11 +9,45 @@
   position: relative;
 }
 
+.tableScroll {
+  width: 100%;
+  overflow-x: visible;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
   font-size: $font-size-sm;
   color: $text-secondary;
+  table-layout: fixed;
+}
+
+.colOrg {
+  width: 14%;
+}
+
+.colUsername {
+  width: 14%;
+}
+
+.colEmail {
+  width: 19%;
+}
+
+.colPhone {
+  width: 14%;
+}
+
+.colDate {
+  width: 19%;
+}
+
+.colStatus {
+  width: 12%;
+}
+
+.colActions {
+  width: 56px;
 }
 
 .th {
@@ -26,8 +60,16 @@
   border-bottom: 1px solid rgba(227, 227, 228, 0.6);
 }
 
-.th > span {
-  margin-right: $spacing-xs;
+.thContent {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  max-width: 100%;
+}
+
+.thLabel {
+  white-space: nowrap;
+  line-height: 1;
 }
 
 .filterBtn {
@@ -115,6 +157,12 @@
   border-bottom: 1px solid rgba(227, 227, 228, 0.6);
 }
 
+.tr td:not(.actionsCell) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .statusPill {
   padding: 4px 10px;
   border-radius: 999px;
@@ -144,9 +192,10 @@
 }
 
 .actionsCell {
-  width: 40px;
+  width: 56px;
   text-align: right;
   position: relative;
+  overflow: visible;
 }
 
 .moreBtn {
@@ -233,6 +282,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .pageBtn,
@@ -266,14 +316,43 @@
 }
 
 @include mobile {
-  .table {
-    display: block;
+  .tableCard {
+    padding: $spacing-md;
+  }
+
+  .tableScroll {
     overflow-x: auto;
+  }
+
+  .table {
+    min-width: 820px;
+    table-layout: auto;
+  }
+
+  .th {
+    font-size: 11px;
+  }
+
+  .thContent {
+    gap: 4px;
+  }
+
+  .filterPanel {
+    left: $spacing-md;
+    right: $spacing-md;
+    width: auto;
+    max-width: none;
   }
 
   .tableFooter {
     flex-direction: column;
     align-items: flex-start;
     gap: $spacing-sm;
+  }
+
+  .pagination {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
   }
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import styles from './AppLayout.module.scss'
 import logo from '../../assets/images/logo.svg'
@@ -13,6 +14,7 @@ import { sidebarSections } from './layoutConfig'
 const AppLayout = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
   const activeItem =
     location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/user-detail')
       ? 'Users'
@@ -21,6 +23,55 @@ const AppLayout = () => {
   return (
     <div className={styles.shell}>
       <header className={styles.topbar}>
+        <button
+          type="button"
+          className={styles.menuToggle}
+          aria-label={isMobileNavOpen ? 'Close menu' : 'Open menu'}
+          onClick={() => setIsMobileNavOpen((prev) => !prev)}
+        >
+          {isMobileNavOpen ? (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M18 6L6 18"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M6 6L18 18"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          ) : (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M4 5H16"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M4 12H16"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M4 19H16"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+        </button>
         <div className={styles.logoRow}>
           <img className={styles.logoImg} src={logo} alt="Lendsqr logo" />
         </div>
@@ -46,7 +97,33 @@ const AppLayout = () => {
       </header>
 
       <div className={styles.body}>
-        <aside className={styles.sidebar}>
+        <aside className={`${styles.sidebar} ${isMobileNavOpen ? styles.sidebarOpen : ''}`}>
+          <div className={styles.mobileSidebarHeader}>
+            <img className={styles.logoImg} src={logo} alt="Lendsqr logo" />
+            <button
+              type="button"
+              className={styles.closeSidebarBtn}
+              aria-label="Close menu"
+              onClick={() => setIsMobileNavOpen(false)}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M18 6L6 18"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M6 6L18 18"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
           <button className={styles.orgSwitch} type="button">
             <span className={styles.iconWrap}>
               <img className={styles.icon} src={briefcaseIcon} alt="" />
@@ -58,7 +135,10 @@ const AppLayout = () => {
             <button
               className={styles.navButton}
               type="button"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => {
+                navigate('/dashboard')
+                setIsMobileNavOpen(false)
+              }}
             >
               <span className={styles.iconWrap}>
                 <img className={styles.icon} src={homeIcon} alt="" />
@@ -79,6 +159,7 @@ const AppLayout = () => {
                       if (item.label === 'Users') {
                         navigate('/dashboard')
                       }
+                      setIsMobileNavOpen(false)
                     }}
                   >
                     <span className={styles.iconWrap}>
@@ -97,6 +178,7 @@ const AppLayout = () => {
                 localStorage.removeItem('auth')
                 localStorage.removeItem('authUser')
                 navigate('/login', { replace: true })
+                setIsMobileNavOpen(false)
               }}
             >
               <span className={styles.iconWrap}>
@@ -106,6 +188,14 @@ const AppLayout = () => {
             </button>
           </nav>
         </aside>
+        {isMobileNavOpen ? (
+          <button
+            type="button"
+            className={styles.sidebarBackdrop}
+            aria-label="Close menu"
+            onClick={() => setIsMobileNavOpen(false)}
+          />
+        ) : null}
 
         <main className={styles.content}>
           <Outlet />
